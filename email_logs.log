@@ -70,3 +70,11 @@ INFO 2026-06-23 15:59:51,195 tasks Released 1 expired seat locks
 INFO 2026-06-24 11:38:07,416 utils Valid YouTube URL validated: 6ZfuNTqbHE8
 INFO 2026-06-24 12:07:37,428 utils Valid YouTube URL validated: 6ZfuNTqbHE8
 INFO 2026-06-24 12:23:25,635 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+ERROR 2026-06-24 15:47:15,478 tasks Error releasing seat locks: relation "movies_seatlock" does not exist
+LINE 1: ...."expires_at", "movies_seatlock"."is_active" FROM "movies_se...
+                                                             ^
+
+ERROR 2026-06-24 15:47:43,293 tasks Error releasing seat locks: relation "movies_seatlock" does not exist
+LINE 1: ...."expires_at", "movies_seatlock"."is_active" FROM "movies_se...
+                                                             ^
+

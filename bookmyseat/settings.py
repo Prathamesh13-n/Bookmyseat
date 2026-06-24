@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-c8aetlj(=vp90n@#yoc^&d(_6ivp(d!bv-4-f!r$lawptjzrwu
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.vercel.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,7 +66,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-# DATABASES['default']=dj_database_url.parse('postgresql://django_bookmyshow_skol_user:1Pmk1HqL4XDV1jf6q4oFDHvTA6bGBEf7@dpg-d8to3i9kh4rs73fhtin0-a/django_bookmyshow_skol')
+DATABASES['default']=dj_database_url.parse('postgresql://django_bookmyshow_skol_user:1Pmk1HqL4XDV1jf6q4oFDHvTA6bGBEf7@dpg-d8to3i9kh4rs73fhtin0-a.virginia-postgres.render.com/django_bookmyshow_skol')
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
