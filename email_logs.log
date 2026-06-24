@@ -1,0 +1,72 @@
+INFO 2026-05-31 16:10:35,240 tasks SUCCESS: Email sent for booking ID 6 to prathameshnehete13@gmail.com
+INFO 2026-06-02 12:04:45,209 tasks SUCCESS: Email sent for booking ID 7 to agsh@gamil.com
+INFO 2026-06-03 12:48:51,907 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 12:50:09,958 utils Valid YouTube URL validated: TcMBFSGVi1c
+INFO 2026-06-03 12:51:14,787 utils Valid YouTube URL validated: eOrNdBpGMv8
+INFO 2026-06-03 12:52:28,009 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 12:54:01,556 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 12:55:10,157 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 12:55:26,103 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 13:00:17,185 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 13:02:07,816 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 13:02:19,423 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 13:08:15,246 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-03 13:10:01,875 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:18:51,081 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:20:16,837 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:21:15,026 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:43:49,548 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:45:34,009 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:48:15,864 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:48:23,248 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 12:50:49,678 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-04 13:05:51,146 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-06 10:48:53,548 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-06 10:49:52,022 tasks SUCCESS: Email sent for booking ID 8 to admin@gmail.com
+INFO 2026-06-06 14:07:59,327 tasks SUCCESS: Email sent for booking ID 9 to admin@gmail.com
+INFO 2026-06-06 14:14:12,064 tasks SUCCESS: Email sent for booking ID 10 to admin@gmail.com
+INFO 2026-06-06 15:55:49,478 tasks SUCCESS: Email sent for booking ID 11 to admin@gmail.com
+ERROR 2026-06-12 20:50:19,637 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:50:49,628 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:51:19,623 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:51:49,621 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:52:19,624 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:52:49,624 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:53:19,629 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:53:49,622 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:54:19,631 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:54:49,630 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+ERROR 2026-06-12 20:55:19,627 tasks Error releasing seat locks: no such column: movies_seatlock.show_date
+INFO 2026-06-12 21:20:26,140 tasks SUCCESS: Email sent for booking ID 13 to viperxV@gmail.com
+INFO 2026-06-12 21:20:26,140 tasks SUCCESS: Email sent for booking ID 12 to admin@gmail.com
+INFO 2026-06-12 21:20:26,144 tasks SUCCESS: Email sent for booking ID 14 to viperxV@gmail.com
+INFO 2026-06-12 21:20:51,980 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-12 21:20:55,404 tasks Released 1 expired seat locks
+INFO 2026-06-13 11:19:34,899 tasks Released 1 expired seat locks
+INFO 2026-06-13 11:51:04,905 tasks Released 1 expired seat locks
+INFO 2026-06-13 16:44:04,839 utils Valid YouTube URL validated: EXeTwQWrcwY
+INFO 2026-06-13 16:46:22,885 utils Valid YouTube URL validated: EXeTwQWrcwY
+INFO 2026-06-13 16:59:09,363 utils Valid YouTube URL validated: EXeTwQWrcwY
+INFO 2026-06-13 17:10:01,758 utils Valid YouTube URL validated: 7uIUH8i3U6E
+INFO 2026-06-13 17:22:30,019 utils Valid YouTube URL validated: zsQmvJmM5ZA
+WARNING 2026-06-13 17:35:21,280 utils Invalid YouTube URL attempted: https://www.bing.com/videos/riverview/relatedvideo?q=Pathaan&mid=8B2D49549170A1403A798B2D49549170A1403A79&churl=https://www.youtube.com/channel/UCbTLwN10NoCU4WDzLf1JMOA&FORM=VAMGZC
+INFO 2026-06-13 17:35:49,777 utils Valid YouTube URL validated: vqu4z34wENw
+INFO 2026-06-13 17:38:48,460 utils Valid YouTube URL validated: vqu4z34wENw
+INFO 2026-06-17 17:52:28,523 tasks SUCCESS: Email sent for booking ID 15 to test3@gmail.com
+om
+INFO 2026-06-17 17:52:28,527 tasks SUCCESS: Email sent for booking ID 18 to testing23@gmail.com
+INFO 2026-06-17 17:52:28,527 tasks SUCCESS: Email sent for booking ID 17 to testing23@gmail.com
+INFO 2026-06-17 17:52:28,531 tasks SUCCESS: Email sent for booking ID 20 to testing23@gmail.com
+INFO 2026-06-17 17:52:28,531 tasks SUCCESS: Email sent for booking ID 19 to testing23@gmail.com
+INFO 2026-06-17 17:52:28,536 tasks SUCCESS: Email sent for booking ID 21 to testing23@gmail.com
+INFO 2026-06-19 15:54:13,697 tasks Released 1 expired seat locks
+INFO 2026-06-23 14:40:48,426 tasks Released 1 expired seat locks
+INFO 2026-06-23 14:44:33,393 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-23 14:45:48,420 tasks Released 1 expired seat locks
+ERROR 2026-06-23 15:24:37,374 views Seat lock error: Seat matching query does not exist.
+INFO 2026-06-23 15:55:51,195 tasks Released 1 expired seat locks
+INFO 2026-06-23 15:58:51,201 tasks Released 1 expired seat locks
+INFO 2026-06-23 15:59:51,195 tasks Released 1 expired seat locks
+INFO 2026-06-24 11:38:07,416 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-24 12:07:37,428 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-24 12:23:25,635 utils Valid YouTube URL validated: 6ZfuNTqbHE8

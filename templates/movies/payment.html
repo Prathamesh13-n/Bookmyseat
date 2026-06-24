@@ -1,0 +1,216 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<style>
+  .payment-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+  .payment-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  .payment-header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .payment-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  .order-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .order-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+  .order-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    border-top: 2px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+    color: #e74c3c;
+  }
+  .form-group label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-size: 15px;
+  }
+  .pay-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+  }
+  .pay-btn:hover { background: #c0392b; }
+  .secure-badge {
+    text-align: center;
+    color: #27ae60;
+    font-size: 13px;
+    margin-top: 15px;
+  }
+  .card-icons { text-align: center; margin-bottom: 20px; font-size: 30px; }
+  .seat-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .seat-badge {
+    background: #e74c3c;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+</style>
+
+<div class="payment-container">
+
+  <div class="payment-card">
+    <div class="payment-header">
+      <h2>🎬 Complete Your Booking</h2>
+      <p class="text-muted">{{ theaters.movie.name }} — {{ theaters.name }}</p>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h6 class="font-weight-bold mb-3">Order Summary</h6>
+      <div class="order-row">
+        <span>Movie</span>
+        <span>{{ theaters.movie.name }}</span>
+      </div>
+      <div class="order-row">
+        <span>Theater</span>
+        <span>{{ theaters.name }}</span>
+      </div>
+      <div class="order-row">
+        <span>Show Time</span>
+        <span>{{ theaters.show_time }}</span>
+      </div>
+      <div class="order-row">
+        <span>Show Date</span>
+        <span>{{ show_date }}</span>
+      </div>
+      <div class="order-row">
+        <span>Seats Selected</span>
+        <span>{{ num_seats }}</span>
+      </div>
+      <div class="order-row">
+        <span>Price per Seat</span>
+        <span>₹{{ ticket_price }}</span>
+      </div>
+      <div class="order-total">
+        <span>Total Amount</span>
+        <span>₹{{ total_amount }}</span>
+      </div>
+    </div>
+
+    <!-- Payment Form -->
+    <form method="POST" action="{% url 'process_payment' theaters.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="idempotency_key" value="{{ idempotency_key }}">
+      <input type="hidden" name="show_date" value="{{ show_date }}">
+
+      <div class="card-icons">
+        💳 🏦 📱
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Card Number</label>
+        <input type="text"
+               name="card_number"
+               class="form-control"
+               placeholder="1234 5678 9012 3456"
+               maxlength="19"
+               required>
+        <small class="text-muted">Use test card: 4111 1111 1111 1111</small>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <label>Expiry Date</label>
+            <input type="text"
+                   name="expiry"
+                   class="form-control"
+                   placeholder="MM/YY"
+                   maxlength="5"
+                   required>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <label>CVV</label>
+            <input type="password"
+                   name="cvv"
+                   class="form-control"
+                   placeholder="123"
+                   maxlength="3"
+                   required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Name on Card</label>
+        <input type="text"
+               name="card_name"
+               class="form-control"
+               placeholder="Your Name"
+               required>
+      </div>
+
+      <button type="submit" class="pay-btn">
+        🔒 Pay ₹{{ total_amount }} Securely
+      </button>
+
+      <div class="secure-badge">
+        <i class="fas fa-lock"></i> 256-bit SSL Secured Payment
+      </div>
+
+    </form>
+  </div>
+
+  <div class="text-center">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+      ← Go Back
+    </a>
+  </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<script>
+  // format card number with spaces
+  document.querySelector('input[name="card_number"]').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.replace(/(\d{4})/g, '$1 ').trim();
+    e.target.value = value;
+  });
+</script>
+
+{% endblock %}

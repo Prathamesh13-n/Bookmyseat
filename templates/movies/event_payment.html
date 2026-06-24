@@ -1,0 +1,60 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-6 mx-auto">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h4 class="text-center mb-4">🎟️ Complete Your Booking</h4>
+
+          <div style="background:#f8f9fa; border-radius:8px; padding:20px; margin-bottom:20px;">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Event</span><span>{{ event.name }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Tickets</span><span>{{ quantity }}</span>
+            </div>
+            <div class="d-flex justify-content-between" style="border-top:1px solid #ddd; padding-top:8px; font-weight:bold; color:#e74c3c;">
+              <span>Total Amount</span><span>₹{{ total_amount }}</span>
+            </div>
+          </div>
+
+          <form method="POST" action="{% url 'process_event_payment' event.id %}">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+              <label>Card Number</label>
+              <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required>
+              <small class="text-muted">Use test card: 4111 1111 1111 1111</small>
+            </div>
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group mb-3">
+                  <label>Expiry</label>
+                  <input type="text" name="expiry" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group mb-3">
+                  <label>CVV</label>
+                  <input type="password" name="cvv" class="form-control" placeholder="123" maxlength="3" required>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger btn-lg btn-block">
+              🔒 Pay ₹{{ total_amount }} Securely
+            </button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

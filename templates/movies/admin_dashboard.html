@@ -1,0 +1,347 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<style>
+  .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 20px; }
+  .dashboard-header {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dashboard-header h1 { margin: 0; font-size: 24px; }
+  .dashboard-header p { margin: 0; opacity: 0.8; font-size: 14px; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border-top: 4px solid #e74c3c;
+  }
+  .stat-card .stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 5px;
+  }
+  .stat-card .stat-label {
+    font-size: 13px;
+    color: #666;
+  }
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .revenue-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+  .revenue-card.daily { border-top: 4px solid #3498db; }
+  .revenue-card.weekly { border-top: 4px solid #2ecc71; }
+  .revenue-card.monthly { border-top: 4px solid #f39c12; }
+  .revenue-card.total { border-top: 4px solid #e74c3c; }
+  .revenue-card .amount {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .revenue-card.daily .amount { color: #3498db; }
+  .revenue-card.weekly .amount { color: #2ecc71; }
+  .revenue-card.monthly .amount { color: #f39c12; }
+  .revenue-card.total .amount { color: #e74c3c; }
+  .revenue-card .period { font-size: 13px; color: #666; }
+  .section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+  .section-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f8f9fa;
+    color: #333;
+  }
+  .analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .analytics-table th {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    text-align: left;
+    font-size: 13px;
+    color: #666;
+    border-bottom: 2px solid #eee;
+  }
+  .analytics-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+  }
+  .analytics-table tr:hover { background: #f8f9fa; }
+  .progress-bar {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 5px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #e74c3c, #f39c12);
+    border-radius: 4px;
+  }
+  .badge-rank {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #e74c3c;
+    color: white;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  .cancellation-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .cancel-stat {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f8f9fa;
+  }
+  .cancel-stat .value { font-size: 22px; font-weight: bold; }
+  .cancel-stat .label { font-size: 12px; color: #666; margin-top: 3px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .refresh-btn {
+    background: white;
+    color: #e74c3c;
+    border: 2px solid white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .refresh-btn:hover { background: #e74c3c; color: white; }
+  @media(max-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .revenue-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .cancellation-box { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="dashboard-container">
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1>📊 Admin Analytics Dashboard</h1>
+      <p>BookMySeat — Real-time analytics and insights</p>
+    </div>
+    <a href="{% url 'admin_dashboard' %}" class="refresh-btn">
+      🔄 Refresh Data
+    </a>
+  </div>
+
+  <!-- Total Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_bookings }}</div>
+      <div class="stat-label">Total Bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-label">Unique Users</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_movies }}</div>
+      <div class="stat-label">Total Movies</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_theaters }}</div>
+      <div class="stat-label">Total Theaters</div>
+    </div>
+  </div>
+
+  <!-- Revenue Section -->
+  <div class="revenue-grid">
+    <div class="revenue-card daily">
+      <div class="amount">₹{{ revenue.daily }}</div>
+      <div class="period">Today's Revenue</div>
+    </div>
+    <div class="revenue-card weekly">
+      <div class="amount">₹{{ revenue.weekly }}</div>
+      <div class="period">This Week</div>
+    </div>
+    <div class="revenue-card monthly">
+      <div class="amount">₹{{ revenue.monthly }}</div>
+      <div class="period">This Month</div>
+    </div>
+    <div class="revenue-card total">
+      <div class="amount">₹{{ revenue.total }}</div>
+      <div class="period">Total Revenue</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- Popular Movies -->
+    <div class="section-card">
+      <h3>🎬 Most Popular Movies</h3>
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Movie</th>
+            <th>Bookings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in popular_movies %}
+          <tr>
+            <td>
+              <span class="badge-rank">{{ forloop.counter }}</span>
+              {{ item.movie__name }}
+            </td>
+            <td>
+              {{ item.booking_count }}
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ item.booking_count }}%"></div>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-muted">No data yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Busiest Theaters -->
+    <div class="section-card">
+      <h3>🏛️ Busiest Theaters</h3>
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Theater</th>
+            <th>Bookings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in busiest_theaters %}
+          <tr>
+            <td>
+              <span class="badge-rank">{{ forloop.counter }}</span>
+              {{ item.theater__name }}
+            </td>
+            <td>
+              {{ item.booking_count }}
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ item.booking_count }}%"></div>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-muted">No data yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="two-col">
+
+    <!-- Peak Booking Hours -->
+    <div class="section-card">
+      <h3>⏰ Peak Booking Hours</h3>
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Hour</th>
+            <th>Bookings</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in peak_hours %}
+          <tr>
+            <td>{{ item.hour }}</td>
+            <td>
+              {{ item.count }}
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ item.count }}%"></div>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-muted">No data yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Cancellation Rates -->
+    <div class="section-card">
+      <h3>❌ Payment & Cancellation Rates</h3>
+      <div class="cancellation-box">
+        <div class="cancel-stat">
+          <div class="value" style="color:#27ae60;">{{ cancellation.success }}</div>
+          <div class="label">Successful</div>
+        </div>
+        <div class="cancel-stat">
+          <div class="value" style="color:#e74c3c;">{{ cancellation.failed }}</div>
+          <div class="label">Failed</div>
+        </div>
+        <div class="cancel-stat">
+          <div class="value" style="color:#f39c12;">{{ cancellation.rate }}%</div>
+          <div class="label">Failure Rate</div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <div class="progress-bar" style="height:12px;">
+          <div class="progress-fill"
+               style="width:{{ cancellation.rate }}%;
+                      background: linear-gradient(to right, #27ae60, #e74c3c);">
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-1">
+          <small class="text-muted">Success Rate: {{ cancellation.success }} payments</small>
+          <small class="text-muted">Total: {{ cancellation.total }}</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<style>
+  .failed-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  .failed-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+  }
+  .failed-icon {
+    width: 80px;
+    height: 80px;
+    background: #e74c3c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .failed-icon i { color: white; font-size: 40px; }
+  .failed-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+  .reasons-box {
+    background: #fff5f5;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+    border-left: 4px solid #e74c3c;
+  }
+  .btn-retry {
+    background: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 5px;
+    transition: background 0.3s;
+  }
+  .btn-retry:hover { background: #c0392b; color: white; text-decoration: none; }
+  .btn-home {
+    background: #95a5a6;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 5px;
+    transition: background 0.3s;
+  }
+  .btn-home:hover { background: #7f8c8d; color: white; text-decoration: none; }
+</style>
+
+<div class="failed-container">
+  <div class="failed-card">
+
+    <div class="failed-icon">
+      <i class="fas fa-times"></i>
+    </div>
+
+    <div class="failed-title">Payment Failed! ❌</div>
+    <p class="text-muted">Your payment could not be processed.</p>
+
+    <div class="reasons-box">
+      <strong>Possible reasons:</strong>
+      <ul class="mt-2">
+        <li>Invalid card number</li>
+        <li>Insufficient funds</li>
+        <li>Card expired</li>
+        <li>Selected seats already booked</li>
+        <li>Network timeout</li>
+      </ul>
+    </div>
+
+    <p class="text-muted">
+      No amount has been deducted from your account.
+      Please try again with correct card details.
+    </p>
+
+    <div class="mt-3">
+      <a href="{% url 'movie_list' %}" class="btn-retry">
+        🔄 Try Again
+      </a>
+      <a href="{% url 'movie_list' %}" class="btn-home">
+        🏠 Go Home
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+{% endblock %}

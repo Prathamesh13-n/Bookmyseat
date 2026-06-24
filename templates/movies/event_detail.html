@@ -1,0 +1,60 @@
+{% extends "users/basic.html" %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+
+      <div class="card shadow-sm">
+        <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}" style="max-height:350px; object-fit:cover;">
+        <div class="card-body">
+          <h3 class="card-title">{{ event.name }}</h3>
+
+          {% if event.venue %}
+          <p class="text-muted mb-1"><i class="fas fa-map-marker-alt me-2"></i>{{ event.venue }}</p>
+          {% endif %}
+          {% if event.event_date %}
+          <p class="text-muted mb-3"><i class="far fa-calendar me-2"></i>{{ event.event_date }}</p>
+          {% endif %}
+
+          {% if event.description %}
+          <p>{{ event.description }}</p>
+          {% endif %}
+
+          <div class="d-flex justify-content-between align-items-center mt-4 p-3" style="background:#f8f9fa; border-radius:8px;">
+            <div>
+              <strong style="font-size:20px; color:#e74c3c;">₹{{ event.ticket_price }}</strong>
+              <span class="text-muted ms-1">per ticket</span>
+            </div>
+            <div>
+              <span class="badge {% if event.tickets_remaining > 10 %}badge-success{% else %}badge-warning{% endif %}">
+                {{ event.tickets_remaining }} tickets left
+              </span>
+            </div>
+          </div>
+
+          {% if event.tickets_remaining > 0 %}
+          <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Number of Tickets</label>
+              <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ event.tickets_remaining }}" style="max-width:150px;">
+            </div>
+            <button type="submit" class="btn btn-danger btn-lg mt-2">
+              🎟️ Book Tickets
+            </button>
+          </form>
+          {% else %}
+          <div class="alert alert-secondary mt-4">Sorry, this event is sold out!</div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+{% endblock %}

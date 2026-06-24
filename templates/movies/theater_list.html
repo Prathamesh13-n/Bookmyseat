@@ -1,0 +1,203 @@
+{% extends "users/basic.html" %}
+{% block content %}
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .movie-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .theatre-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .theatre-info strong {
+    font-size: 18px;
+    flex: 1;
+  }
+  .info-icons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+    flex: 2;
+  }
+  .info-icons i {
+    margin-right: 5px;
+    font-size: 18px;
+  }
+  .show-times {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .time-box {
+    border: 1px solid #28a745;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    background-color: #fff;
+    min-width: 110px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+  }
+  .time-box:hover {
+    transform: scale(1.05);
+    background-color: #28a745;
+    color: white;
+  }
+  .time-box:hover span,
+  .time-box:hover strong,
+  .time-box:hover a {
+    color: white !important;
+  }
+  .time-box strong {
+    display: block;
+    font-size: 16px;
+    color: #333;
+  }
+  .time-box span {
+    display: block;
+    font-size: 11px;
+    margin-top: 3px;
+  }
+  .time-box a {
+    display: block;
+    font-size: 11px;
+    color: #28a745;
+    text-decoration: none;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+  .non-cancellable {
+    color: #ffc107;
+    font-size: 12px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .non-cancellable i { margin-right: 5px; }
+  .date-selector {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  .date-box {
+    min-width: 70px;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s;
+  }
+  .date-box:hover {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+    text-decoration: none;
+  }
+  .date-box.active {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+  }
+  .day-name { font-size: 12px; font-weight: 500; }
+  .day-num { font-size: 22px; font-weight: bold; line-height: 1.2; }
+  .day-month { font-size: 11px; }
+  @media (max-width: 768px) {
+    .theatre-info { flex-direction: column; align-items: flex-start; }
+    .time-box { flex: 1 1 100%; margin-bottom: 10px; }
+  }
+</style>
+
+<div class="container">
+
+  <div class="movie-title">{{ movie.name }}</div>
+
+  <!-- Date Selector -->
+  <div class="date-selector mb-4">
+    <div class="d-flex overflow-auto" style="gap:10px; padding:10px 0;">
+      {% for d in dates %}
+      <a href="?date={{ d.date }}"
+         class="date-box {% if d.date == selected_date %}active{% endif %}">
+        <span class="day-name">{% if d.is_today %}Today{% else %}{{ d.day }}{% endif %}</span>
+        <span class="day-num">{{ d.num }}</span>
+        <span class="day-month">{{ d.month }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if theaters %}
+  {% for theater in theaters %}
+
+  <!-- Theater Info -->
+  <div class="theatre-info">
+    <div>
+      <strong>{{ theater.name }} Theater</strong>
+      <div class="info-icons mt-2">
+        <i class="fas fa-mobile-alt text-success"></i> M-Ticket
+        <i class="fas fa-utensils text-warning ms-3"></i> Food & Beverage
+        <i class="fas fa-parking text-primary ms-3"></i> Parking Available
+        <i class="fas fa-wheelchair text-info ms-3"></i> Wheelchair Access
+        <i class="fas fa-glasses text-danger ms-3"></i> 3D Show Available
+      </div>
+    </div>
+  </div>
+
+  <!-- Show Time — dynamic per theater -->
+  <div class="show-times">
+    <div class="time-box">
+      <strong>{{ theater.show_time }}</strong>
+      <span style="color:green;">Available</span>
+      <a href="{% url 'book_seats' theater.id %}?date={{ selected_date }}&time={{ theater.show_time }}">
+        Book Now
+      </a>
+    </div>
+  </div>
+
+  {% endfor %}
+
+  {% else %}
+  <div class="no-theaters mt-4">
+    <p>Sorry, no theaters are available for this movie at the moment.</p>
+  </div>
+  {% endif %}
+
+  <div class="non-cancellable mt-4">
+    <i class="fas fa-circle text-warning"></i> Non-cancellable
+  </div>
+
+</div>
+{% endblock %}

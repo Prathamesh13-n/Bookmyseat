@@ -1,0 +1,168 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h1 class="text-center mb-2">Movies</h1>
+    <p class="text-center text-muted mb-4">
+        <strong>{{ total_count }}</strong> movies found
+    </p>
+
+    <form method="GET" action="{% url 'movie_list' %}">
+
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input class="form-control form-control-lg" name="search" placeholder="Search for movies..."
+                        type="text" value="{{ search }}" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <div class="card mb-3">
+                    <div class="card-header font-weight-bold">
+                        <i class="fas fa-film"></i> Genre
+                    </div>
+                    <div class="card-body">
+                        {% for value, label, count in genre_list %}
+                        <div class="form-check mb-1">
+                            <input class="form-check-input" type="checkbox" name="genre" value="{{ value }}"
+                                id="genre_{{ value }}" {% if value in selected_genres %}checked{% endif %}>
+                            <label class="form-check-label d-flex justify-content-between" for="genre_{{ value }}">
+                                {{ label }}
+                                <span class="badge badge-secondary ml-2">{{ count }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header font-weight-bold">
+                        <i class="fas fa-language"></i> Language
+                    </div>
+                    <div class="card-body">
+                        {% for value, label, count in language_list %}
+                        <div class="form-check mb-1">
+                            <input class="form-check-input" type="checkbox" name="language" value="{{ value }}"
+                                id="language_{{ value }}" {% if value in selected_languages %}checked{% endif %}>
+                            <label class="form-check-label d-flex justify-content-between" for="language_{{ value }}">
+                                {{ label }}
+                                <span class="badge badge-secondary ml-2">{{ count }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header font-weight-bold">
+                        <i class="fas fa-sort"></i> Sort By
+                    </div>
+                    <div class="card-body">
+                        <select name="sort_by" class="form-control">
+                            <option value="">Default</option>
+                            <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Rating: High to Low</option>
+                            <option value="-rating" {% if selected_sort == '-rating' %}selected{% endif %}>Rating: Low to High</option>
+                            <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name: A to Z</option>
+                            <option value="-name" {% if selected_sort == '-name' %}selected{% endif %}>Name: Z to A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mb-2">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <a href="{% url 'movie_list' %}" class="btn btn-outline-secondary btn-block">
+                    <i class="fas fa-times"></i> Clear All
+                </a>
+
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    {% for movie in movies %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.name }}"
+                                style="height: 250px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ movie.name }}</h5>
+                                <p class="card-text mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    {{ movie.rating }}
+                                </p>
+                                <p class="card-text mb-1">
+                                    <span class="badge badge-info">{{ movie.get_genre_display }}</span>
+                                    <span class="badge badge-secondary">{{ movie.get_language_display }}</span>
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-users"></i> {{ movie.cast }}
+                                    </small>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-white border-top-0">
+                                <a href="{% url 'movie_detail' movie.id %}" class="btn btn-danger btn-block mb-1">
+                                    🎬 View Details & Trailer
+                                </a>
+                                <a href="{% url 'theater_list' movie.id %}" class="btn btn-outline-primary btn-block">
+                                    Book Tickets <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-film fa-3x text-muted mb-3"></i>
+                        <p class="lead">No movies found.</p>
+                        <a href="{% url 'movie_list' %}" class="btn btn-primary">Clear Filters</a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if page_obj.has_other_pages %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{{ query_string }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link" href="?{{ query_string }}&page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{{ query_string }}&page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<style>
+    .card { transition: transform 0.3s ease-in-out; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important; }
+    .form-check-label { cursor: pointer; width: 100%; }
+</style>
+
+{% endblock %}

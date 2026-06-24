@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 30px auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background: #e74c3c; color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .body { padding: 30px; }
+        .booking-id { background: #f8f9fa; border-left: 4px solid #e74c3c; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th { background: #e74c3c; color: white; padding: 12px; text-align: left; }
+        .details-table td { padding: 12px; border-bottom: 1px solid #eee; }
+        .details-table tr:nth-child(even) { background: #f8f9fa; }
+        .footer { background: #333; color: #aaa; padding: 20px; text-align: center; font-size: 12px; }
+        .success-badge { background: #27ae60; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 BookMySeat</h1>
+            <p>Your booking is confirmed!</p>
+            <span class="success-badge">✓ CONFIRMED</span>
+        </div>
+        <div class="body">
+            <p>Dear <strong>{{ user.username }}</strong>,</p>
+            <p>Your ticket has been successfully booked. Here are your booking details:</p>
+            <div class="booking-id">
+                <strong>Booking ID:</strong> #{{ booking.id }}<br>
+                <strong>Booked At:</strong> {{ booking.booked_at }}
+            </div>
+            <table class="details-table">
+                <tr>
+                    <th colspan="2">🎬 Movie Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Movie</strong></td>
+                    <td>{{ movie.name }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Genre</strong></td>
+                    <td>{{ movie.get_genre_display }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Language</strong></td>
+                    <td>{{ movie.get_language_display }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Rating</strong></td>
+                    <td>⭐ {{ movie.rating }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">🏛️ Theater Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Theater</strong></td>
+                    <td>{{ theater.name }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Show Time</strong></td>
+                    <td>{{ theater.time }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Show Date</strong></td>
+                    <td>{{ booking.show_date }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2">💺 Seat Details</th>
+                </tr>
+                <tr>
+                    <td><strong>Seat Number</strong></td>
+                    <td>{{ seat.seat_number }}</td>
+                </tr>
+            </table>
+            <p style="color: #e74c3c; font-weight: bold;">
+                ⚠️ Please arrive 15 minutes before show time.
+            </p>
+            <p>Thank you for booking with BookMySeat!</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated email. Please do not reply.</p>
+            <p>© 2026 BookMySeat. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
