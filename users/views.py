@@ -8,13 +8,20 @@ from django.utils import timezone
 
 
 def home(request):
+    from movies.models import Event, Play
+    from django.utils import timezone
+
     movies = Movie.objects.all()
     events = Event.objects.filter(event_date__gte=timezone.localdate())[:6]
+    plays = Play.objects.filter(play_date__gte=timezone.localdate())[:6]
 
     return render(request, 'home.html', {
         'movies': movies,
         'events': events,
+        'plays': plays,
     })
+def coming_soon(request, feature_name='Feature'):
+    return render(request, 'coming_soon.html', {'feature_name': feature_name})
 
 
 def register(request):
@@ -46,7 +53,12 @@ def login_view(request):
 
 @login_required
 def profile(request):
+    from movies.models import EventBooking, PlayBooking
+
     bookings = Booking.objects.filter(user=request.user)
+    event_bookings = EventBooking.objects.filter(user=request.user, status='success')
+    play_bookings = PlayBooking.objects.filter(user=request.user, status='success')
+
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         if u_form.is_valid():
@@ -55,7 +67,12 @@ def profile(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
 
-    return render(request, 'users/profile.html', {'u_form': u_form, 'bookings': bookings})
+    return render(request, 'users/profile.html', {
+        'u_form': u_form,
+        'bookings': bookings,
+        'event_bookings': event_bookings,
+        'play_bookings': play_bookings,
+    })
 
 
 @login_required

@@ -81,13 +81,13 @@ class Seat(models.Model):
         ('basic', 'Basic'),
     ]
 
-    CATEGORY_MULTIPLIERS = {
-        'vip': 3.0,
-        'premium': 2.0,
-        'gold': 1.5,
-        'silver': 1.2,
-        'basic': 1.0,
-    }
+    CATEGORY_PRICES = {
+    'vip': 600,
+    'premium': 400,
+    'gold': 300,
+    'silver': 240,
+    'basic': 200,
+}
 
     theater = models.ForeignKey(Theater, on_delete=models.CASCADE, related_name='seats')
     seat_number = models.CharField(max_length=10)
@@ -102,21 +102,11 @@ class Seat(models.Model):
     class Meta:
         ordering = ['seat_number']
 
-    def get_base_price(self):
-        """Base price determined by movie rating"""
-        rating = float(self.theater.movie.rating)
-        if rating >= 8.0:
-            return 200
-        elif rating >= 6.0:
-            return 150
-        else:
-            return 120
+
 
     def get_price(self):
-        """Final price = base price x category multiplier"""
-        base = self.get_base_price()
-        multiplier = self.CATEGORY_MULTIPLIERS.get(self.category, 1.0)
-        return round(base * multiplier)
+        """Fixed price based on seat category"""
+        return self.CATEGORY_PRICES.get(self.category, 200)
 
     def __str__(self):
         return f'{self.seat_number} ({self.category}) - ₹{self.get_price()} in {self.theater.name}'
@@ -271,3 +261,46 @@ class EventBooking(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.event.name} x{self.quantity}'
+    
+
+
+class Play(models.Model):
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="plays/")
+    description = models.TextField(blank=True, null=True)
+    venue = models.CharField(max_length=255, blank=True, null=True)
+    play_date = models.DateField(null=True, blank=True)
+    ticket_price = models.DecimalField(max_digits=8, decimal_places=2, default=500)
+    total_tickets = models.PositiveIntegerField(default=100)
+
+    class Meta:
+        ordering = ['play_date']
+
+    def tickets_booked(self):
+        return sum(b.quantity for b in self.bookings.filter(status='success'))
+
+    def tickets_remaining(self):
+        return self.total_tickets - self.tickets_booked()
+
+    def __str__(self):
+        return self.name
+
+
+class PlayBooking(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    play = models.ForeignKey(Play, on_delete=models.CASCADE, related_name='bookings')
+    quantity = models.PositiveIntegerField(default=1)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    idempotency_key = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    booked_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.play.name} x{self.quantity}'

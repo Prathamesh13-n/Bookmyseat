@@ -27,3 +27,14 @@ from .models import Event
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['name', 'venue', 'event_date']
+
+
+from .models import Play, PlayBooking
+
+@admin.register(Play)
+class PlayAdmin(admin.ModelAdmin):
+    list_display = ['name', 'venue', 'play_date', 'ticket_price']
+
+@admin.register(PlayBooking)
+class PlayBookingAdmin(admin.ModelAdmin):
+    list_display = ['user', 'play', 'quantity', 'status']

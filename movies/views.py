@@ -70,6 +70,65 @@ def _build_seat_statuses(theaters, seats, show_date, user):
     ]
 
 
+def _build_seat_layout(seats_with_status):
+    """
+    Groups seats into category -> rows -> left/center/right blocks.
+    Normal rows: 4 left, 12 center, 4 right (20 total).
+    VIP rows: 10 seats, center block only.
+    """
+    from collections import OrderedDict
+    import re
+
+    categories = OrderedDict()
+
+    for item in seats_with_status:
+        seat = item['seat']
+        category = seat.category
+        match = re.match(r'([A-Za-z]+)(\d+)', seat.seat_number)
+        row_label = match.group(1) if match else seat.seat_number
+        seat_num = int(match.group(2)) if match else 0
+
+        categories.setdefault(category, OrderedDict())
+        categories[category].setdefault(row_label, [])
+        categories[category][row_label].append((seat_num, item))
+
+    layout = []
+    for category, rows in categories.items():
+        row_list = []
+        for row_label, seat_items in rows.items():
+            seat_items.sort(key=lambda x: x[0])
+            ordered_items = [s[1] for s in seat_items]
+            total = len(ordered_items)
+
+            if category == 'vip':
+                left_block = []
+                center_block = ordered_items
+                right_block = []
+            else:
+                left_count = 4 if total >= 8 else 0
+                right_count = 4 if total >= 8 else 0
+                left_block = ordered_items[:left_count]
+                right_block = ordered_items[-right_count:] if right_count else []
+                center_block = ordered_items[left_count: total - right_count] if right_count else ordered_items[left_count:]
+
+            row_list.append({
+                'row_label': row_label,
+                'left': left_block,
+                'center': center_block,
+                'right': right_block,
+            })
+
+        sample_seat = rows[next(iter(rows))][0][1]['seat']
+        layout.append({
+            'category': category,
+            'category_display': sample_seat.get_category_display(),
+            'price': sample_seat.get_price(),
+            'rows': row_list,
+        })
+
+    return layout
+
+
 def _render_seat_selection(request, theaters, seats, show_date, error=None):
     context = {
         'theaters': theaters,
@@ -827,3 +886,88 @@ def process_event_payment(request, event_id):
             return redirect('payment_failed')
 
     return redirect('home')
+
+
+
+def play_list(request):
+    from .models import Play
+    plays = Play.objects.filter(play_date__gte=timezone.localdate())
+    return render(request, 'movies/play_list.html', {'plays': plays})
+
+
+@login_required(login_url='/login/')
+def play_detail(request, play_id):
+    from .models import Play, PlayBooking
+
+    play = get_object_or_404(Play, id=play_id)
+
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+
+        if quantity < 1:
+            messages.error(request, 'Invalid quantity!')
+            return redirect('play_list')
+
+        if quantity > play.tickets_remaining():
+            messages.error(request, f'Only {play.tickets_remaining()} tickets remaining!')
+            return redirect('play_list')
+
+        total_amount = quantity * play.ticket_price
+
+        request.session['play_id'] = play_id
+        request.session['play_quantity'] = quantity
+        request.session['play_total_amount'] = str(total_amount)
+        request.session['play_idempotency_key'] = str(uuid.uuid4())
+
+        return render(request, 'movies/play_payment.html', {
+            'play': play,
+            'quantity': quantity,
+            'total_amount': total_amount,
+        })
+
+    return render(request, 'movies/play_detail.html', {'play': play})
+
+
+@login_required(login_url='/login/')
+def process_play_payment(request, play_id):
+    from .models import Play, PlayBooking
+
+    play = get_object_or_404(Play, id=play_id)
+
+    if request.method == 'POST':
+        quantity = request.session.get('play_quantity', 1)
+        total_amount = request.session.get('play_total_amount', 0)
+        idempotency_key = request.session.get('play_idempotency_key')
+
+        existing = PlayBooking.objects.filter(idempotency_key=idempotency_key).first()
+        if existing and existing.status == 'success':
+            messages.warning(request, 'Booking already processed!')
+            return redirect('payment_success')
+
+        card_number = request.POST.get('card_number', '')
+
+        if card_number and len(card_number.replace(' ', '')) == 16:
+            if quantity <= play.tickets_remaining():
+                booking = PlayBooking.objects.create(
+                    user=request.user,
+                    play=play,
+                    quantity=quantity,
+                    total_amount=total_amount,
+                    status='success',
+                    idempotency_key=idempotency_key,
+                )
+
+                request.session.pop('play_id', None)
+                request.session.pop('play_quantity', None)
+                request.session.pop('play_total_amount', None)
+                request.session.pop('play_idempotency_key', None)
+                request.session['payment_id'] = f'play_{booking.id}'
+                request.session['payment_amount'] = str(total_amount)
+
+                return redirect('payment_success')
+            else:
+                return redirect('payment_failed')
+        else:
+            return redirect('payment_failed')
+
+    return redirect('play_list')
