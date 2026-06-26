@@ -78,3 +78,8 @@ ERROR 2026-06-24 15:47:43,293 tasks Error releasing seat locks: relation "movies
 LINE 1: ...."expires_at", "movies_seatlock"."is_active" FROM "movies_se...
                                                              ^
 
+INFO 2026-06-25 20:23:43,632 utils Valid YouTube URL validated: NgBoMJy386M
+INFO 2026-06-25 20:24:00,390 utils Valid YouTube URL validated: 7uIUH8i3U6E
+INFO 2026-06-25 20:30:06,639 utils Valid YouTube URL validated: 6ZfuNTqbHE8
+INFO 2026-06-25 21:31:40,692 utils Valid YouTube URL validated: EXeTwQWrcwY
+INFO 2026-06-25 21:34:18,131 tasks Released 1 expired seat locks
