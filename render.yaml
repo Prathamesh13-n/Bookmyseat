@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: bookmyseat
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    preDeployCommand: python manage.py migrate
+    startCommand: gunicorn bookmyseat.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bookmyseat-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+
+databases:
+  - name: bookmyseat-db
+    plan: free
+    region: singapore
+    databaseName: bookmyseat
+    user: bookmyseat

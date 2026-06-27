@@ -329,8 +329,7 @@ def book_seats(request, theater_id):
             request.session['theater_id'] = theater_id
             request.session['show_date'] = show_date.isoformat()
 
-            ticket_price = getattr(settings, 'TICKET_PRICE', 250)
-            total_amount = len(selected_seats) * ticket_price
+            total_amount = sum(seat.get_price() for seat in locked_seats)
             idempotency_key = str(uuid.uuid4())
 
             request.session['total_amount'] = str(total_amount)
@@ -341,7 +340,7 @@ def book_seats(request, theater_id):
                 'selected_seats': selected_seats,
                 'total_amount': total_amount,
                 'idempotency_key': idempotency_key,
-                'ticket_price': ticket_price,
+                # 'ticket_price': ticket_price,
                 'num_seats': len(selected_seats),
                 'show_date': show_date.isoformat(),
                 'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
@@ -418,8 +417,10 @@ def initiate_payment(request, theater_id):
             messages.error(request, 'Failed to lock seats. Please try again.')
             return redirect(_book_seats_url(theater_id, show_date))
 
-        ticket_price = getattr(settings, 'TICKET_PRICE', 250)
-        total_amount = len(selected_seats) * ticket_price
+        total_amount = sum(
+            Seat.objects.get(id=seat_id).get_price()
+            for seat_id in selected_seats
+        )
         idempotency_key = str(uuid.uuid4())
 
         request.session['selected_seats'] = selected_seats
@@ -433,7 +434,6 @@ def initiate_payment(request, theater_id):
             'selected_seats': selected_seats,
             'total_amount': total_amount,
             'idempotency_key': idempotency_key,
-            'ticket_price': ticket_price,
             'num_seats': len(selected_seats),
             'show_date': show_date.isoformat(),
             'publishable_key': settings.STRIPE_PUBLISHABLE_KEY,
